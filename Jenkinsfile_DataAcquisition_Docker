@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build Maven'){
             steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nqn002/BD2_HAAQ']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nqn002/BDP2-HAAQ']]])
                 echo 'mvn clean install'
             }
         }
