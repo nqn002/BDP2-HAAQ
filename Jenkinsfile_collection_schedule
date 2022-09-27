@@ -1,0 +1,11 @@
+pipeline {
+    agent any 
+    stages {
+        stage('Data acquisition') { 
+            steps {
+                
+                sh ('chmod +x ./src/real_time_twitter_collection.py')
+            }
+        }   
+    } 
+}

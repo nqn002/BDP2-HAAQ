@@ -1,0 +1,20 @@
+prepare:
+  num_rows: 100
+  train_size: 0.8
+  seed: 42
+featurize:
+  seed: 512
+train:
+  seed: 514
+  batch_size: 128
+  epochs: 10
+  validation_split: 0.2 
+  dropout: 0.5
+  activation_classification: sigmoid
+  activation_dense: relu
+  loss: binary_crossentropy
+  metrics:
+  - accuracy
+evaluate:
+  average: weighted
+  

@@ -1,0 +1,52 @@
+stages:
+  prepare:
+    cmd: python3 src/prepare.py data/prepared
+    deps:
+    - src/prepare.py
+    params:
+    - prepare.num_rows
+    - prepare.train_size
+    - prepare.seed
+    outs:
+    - data/prepared
+  featurize:
+    cmd: python3 src/featurize.py data/prepared/train.csv data/prepared/test.csv data/featurized
+    deps:
+    - data/prepared/train.csv 
+    - data/prepared/test.csv
+    - src/train.py
+    params:
+    - featurize.seed
+    outs:
+    - data/featurized
+  train:
+    cmd: python3 src/train.py data/featurized/train.pkl
+    deps:
+    - data/featurized/train.pkl
+    - src/train.py
+    params:
+    - train.batch_size
+    - train.epochs
+    - train.validation_split
+    - train.dropout
+    - train.activation_classification
+    - train.activation_dense
+    - train.loss
+    - train.metrics
+    outs:
+    - model.pkl
+  evaluate:
+    cmd: python3 src/evaluate.py model.pkl data/featurized/train.pkl data/featurized/test.pkl
+    deps:
+    - model.pkl
+    - data/featurized/train.pkl
+    - data/featurized/test.pkl
+    - src/evaluate.py
+    params:
+    - evaluate.average
+    metrics:
+    - evaluation.json
+    plots:
+    - evaluation/plots/confusion_matrix.json
+    - evaluation/plots/precision_recall.json
+    - evaluation/plots/roc.json

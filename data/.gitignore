@@ -1,0 +1,7 @@
+data/batch_tweets.csv
+data/twitter_data.csv
+/prepared
+/analysed
+/featurized
+/trained
+/evaluation

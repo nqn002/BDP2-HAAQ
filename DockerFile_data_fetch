@@ -1,0 +1,32 @@
+FROM ubuntu:latest
+
+# Install Python
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update
+RUN apt-get install -y python3.10
+RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN apt-get install -y python3-pip
+
+
+#set the application working directory inside the container
+WORKDIR /bdp2
+
+
+# copies all the files in the current folder to working dir in container
+ADD . /bdp2
+
+# Create a Virtual environment
+RUN pip install virtualenv
+ENV VIRTUAL_ENV=/bdp2_venv
+RUN virtualenv venv -p python3
+ENV PATH="$VIRTUAL_ENV/bin/:$PATH"
+
+# Install dependencies
+RUN pip install -r requirements.txt
+RUN python3 -m pip install spacy 
+RUN python3 -m spacy download en_core_web_sm
+ 
+# Run the application
+CMD ["python" ,"/bdp2/src/real_time_twitter_collection.py"]

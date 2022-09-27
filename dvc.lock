@@ -1,0 +1,110 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python3 src/prepare.py data/prepared
+    deps:
+    - path: src/prepare.py
+      md5: 5f83752f1dca8e756de199562ed45d04
+      size: 2025
+    params:
+      params.yaml:
+        prepare.num_rows: 100
+        prepare.seed: 42
+        prepare.train_size: 0.8
+    outs:
+    - path: data/prepared
+      md5: 54dd5f98f4aff0843cdb6a529148d0f3.dir
+      size: 4853
+      nfiles: 2
+  analyse:
+    cmd: python3 src/analyse.py data/prepared/twitter_prepared.csv data/analysed
+    deps:
+    - path: data/prepared/twitter_prepared.csv
+      md5: 20df14c4fb7ba01cb18d6cb5972b5022
+      size: 28283
+    - path: src/analyse.py
+      md5: ee69c0e83a56b460a35965410bbd50ed
+      size: 1326
+    params:
+      params.yaml:
+        analyse.num_rows: 100
+    outs:
+    - path: data/analysed
+      md5: 050d318983f54b8305c0237f91693a8d.dir
+      size: 35
+      nfiles: 1
+  featurize:
+    cmd: python3 src/featurize.py data/prepared/train.csv data/prepared/test.csv data/featurized
+    deps:
+    - path: data/prepared/test.csv
+      md5: ec870ea9f138b21e3e34b56f7336fef2
+      size: 990
+    - path: data/prepared/train.csv
+      md5: b97332a09b46174151e9fcf953e913b5
+      size: 3863
+    - path: src/train.py
+      md5: 5d171c53c89c94c391809a8d7aae1a7f
+      size: 2895
+    params:
+      params.yaml:
+        featurize.seed: 512
+    outs:
+    - path: data/featurized
+      md5: e03dd2386be85a3be59037c8627909dd.dir
+      size: 12186
+      nfiles: 2
+  train:
+    cmd: python3 src/train.py data/featurized/train.pkl
+    deps:
+    - path: data/featurized/train.pkl
+      md5: f215526d1232111d0a935caeba6b3ee8
+      size: 9309
+    - path: src/train.py
+      md5: 5d171c53c89c94c391809a8d7aae1a7f
+      size: 2895
+    params:
+      params.yaml:
+        train.activation_classification: sigmoid
+        train.activation_dense: relu
+        train.batch_size: 128
+        train.dropout: 0.5
+        train.epochs: 10
+        train.loss: binary_crossentropy
+        train.metrics:
+        - accuracy
+        train.validation_split: 0.2
+    outs:
+    - path: model.pkl
+      md5: 90a21fffa0f79d10cb615c61ae638d3f
+      size: 1075430
+  evaluate:
+    cmd: python3 src/evaluate.py model.pkl data/featurized/train.pkl data/featurized/test.pkl
+    deps:
+    - path: data/featurized/test.pkl
+      md5: 0f7b6aea08cb9f4be55eeaa0fdad5696
+      size: 2877
+    - path: data/featurized/train.pkl
+      md5: f215526d1232111d0a935caeba6b3ee8
+      size: 9309
+    - path: model.pkl
+      md5: 90a21fffa0f79d10cb615c61ae638d3f
+      size: 1075430
+    - path: src/evaluate.py
+      md5: 30d95f4b1e99ff186f67205030270667
+      size: 2946
+    params:
+      params.yaml:
+        evaluate.average: weighted
+    outs:
+    - path: evaluation.json
+      md5: 2885e3787bba5379304ce10a547d4c71
+      size: 98
+    - path: evaluation/plots/confusion_matrix.json
+      md5: 38d4be01221ad2120fd2b4cfe2d2dffd
+      size: 246
+    - path: evaluation/plots/precision_recall.json
+      md5: 89127e7ce0c17aa0a6be57befe77f377
+      size: 130
+    - path: evaluation/plots/roc.json
+      md5: 43c8ae0f12c93a81216985c9c40c8cae
+      size: 217

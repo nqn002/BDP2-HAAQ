@@ -1,0 +1,19 @@
+FROM python:3.10.7-slim
+RUN pip install virtualenv
+ENV VIRTUAL_ENV=/bdp2_venv
+RUN virtualenv venv -p python3
+ENV PATH="$VIRTUAL_ENV/bin/:$PATH"
+
+#set the application working directory inside the container
+WORKDIR /bdp2
+
+# copies all the files in the current folder to working dir in container
+ADD . /bdp2
+
+# Install dependencies
+RUN pip install -r requirements.txt
+RUN python3 -m pip install spacy 
+RUN python3 -m spacy download en_core_web_sm
+ 
+# Run the application
+CMD ["python" ,"twitter_pipeline.py"]

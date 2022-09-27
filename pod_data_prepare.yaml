@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-prepare-deployment
+  labels:
+    app: data-prepare-application
+
+spec:
+  template:
+    metadata:
+      name: data-prepare-pod
+      labels:
+        app: data-prepare-pod
+
+    spec:
+      containers:
+        - name: data-prepare
+          image: adhi1041/nlp_pipeline
+  
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-prepare-pod
+

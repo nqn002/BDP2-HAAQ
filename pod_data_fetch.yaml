@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-fetch-deployment
+  labels:
+    app: data-fetch-application
+
+spec:
+  template:
+    metadata:
+      name: data-fetch-pod
+      labels:
+        app: data-fetch-pod
+
+    spec:
+      containers:
+        - name: data-fetch
+          image: adhi1041/data_fetch
+  
+  replicas: 3
+  selector:
+    matchLabels:
+      app: data-fetch-pod
+

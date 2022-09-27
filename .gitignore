@@ -1,0 +1,6 @@
+logs/
+evaluation/
+evaluation.json
+model.pkl
+data/batch_tweets.csv
+data/twitter_data.csv

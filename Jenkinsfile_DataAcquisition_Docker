@@ -1,0 +1,36 @@
+pipeline {
+    agent any 
+    tools{
+        maven 'maven_3_8_6'
+    }
+    stages {
+        stage('Build Maven'){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nqn002/BD2_HAAQ']]])
+                echo 'mvn clean install'
+            }
+        }
+        
+        
+        stage('Data acquisition Build Docker') { 
+            steps {
+                script{
+                    echo  'docker build -t adhi1041/data_fetch .'
+                }  
+            }
+        }
+              
+        
+        stage('Push image to Hub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+    
+                    echo 'docker login -u  adhi1041 -p ${dockerhubpwd}'
+}                
+                    echo 'docker push adhi1041/data_fetch'
+                }
+            }
+        }
+    }  
+}

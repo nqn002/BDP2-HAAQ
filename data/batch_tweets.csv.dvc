@@ -1,0 +1,4 @@
+outs:
+- md5: dab8e7cf5239559ec2c44d4099a765db
+  size: 30279248
+  path: batch_tweets.csv
